@@ -22,3 +22,5 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 zenv-*.tar
 
+# Ignore the directory elixirLS will use to function.
+/.elixir_ls/
