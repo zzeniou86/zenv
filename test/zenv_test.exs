@@ -16,7 +16,19 @@ defmodule ZenvTest do
     Application.put_env(:zenv, :test_case_9, [{:system, "DOES_NOT_EXISTS"}, "some_value"])
     Application.put_env(:zenv, :test_case_10, [{:system, "ZENV_ENV"}, "some_value"])
     Application.put_env(:zenv, :test_case_11, [{:system, "ZENV_ENV"}])
+    Application.put_env(:zenv, :test_case_12, {:test, "test_variable"})
+    Application.put_env(:zenv, :test_case_13, {:prod, "test_variable"})
     :ok
+  end
+
+  describe "Zenv.get_env/3 with environment tuple enhancement" do
+    test "returns the value when the environment matches with the environment tuple" do
+      assert Zenv.get_env(:zenv, :test_case_12) == "test_variable"
+    end
+
+    test "returns nil when the environment does not match with the environment tuple" do
+      assert Zenv.get_env(:zenv, :test_case_13) == nil
+    end
   end
 
   describe "Zenv.get_env/3 with list of configuration as parameter" do

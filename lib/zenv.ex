@@ -7,6 +7,9 @@ defmodule Zenv do
   @type key :: atom
   @type value :: term
 
+  defguard is_environment(value)
+           when is_atom(value) and value in [:dev, :prod, :production, :staging, :test]
+
   @doc """
   Returns the value for `key` in `app`'s environment.
 
@@ -28,6 +31,14 @@ defmodule Zenv do
     System.get_env(key)
   end
 
+  defp process_env({env, value}) when is_environment(env) do
+    current_environment = get_current_environment()
+
+    if current_environment == env,
+      do: value,
+      else: nil
+  end
+
   defp process_env([]) do
     nil
   end
@@ -39,5 +50,19 @@ defmodule Zenv do
   # if the configuration parameter is a value, return the value
   defp process_env(value) do
     value
+  end
+
+  defp get_current_environment() do
+    case function_exported?(Mix, :env, 0) do
+      true ->
+        Mix.env()
+
+      _ ->
+        env = System.get_env("MIX_ENV")
+
+        if env == nil,
+          do: raise(RuntimeError, "MIX_ENV environment variable is not defined"),
+          else: String.to_atom(env)
+    end
   end
 end
