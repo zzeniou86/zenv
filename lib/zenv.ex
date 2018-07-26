@@ -28,6 +28,14 @@ defmodule Zenv do
     System.get_env(key)
   end
 
+  defp process_env([]) do
+    nil
+  end
+
+  defp process_env([value | list]) do
+    process_env(value) || process_env(list)
+  end
+
   # if the configuration parameter is a value, return the value
   defp process_env(value) do
     value

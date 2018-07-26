@@ -10,7 +10,39 @@ defmodule ZenvTest do
     Application.put_env(:zenv, :test_case_3, {:system, "ZENV_ENV"})
     Application.put_env(:zenv, :test_case_4, {:system, "DOES_NOT_EXISTS", "default_env"})
     Application.put_env(:zenv, :test_case_5, {:system, "DOES_NOT_EXISTS"})
+    Application.put_env(:zenv, :test_case_6, [{:system, "DOES_NOT_EXISTS"}, {:system, "ZENV_ENV"}])
+    Application.put_env(:zenv, :test_case_7, [{:system, "DOES_NOT_EXISTS"}, {:system, "DOES_NOT_EXISTS_2"}])
+    Application.put_env(:zenv, :test_case_8, [])
+    Application.put_env(:zenv, :test_case_9, [{:system, "DOES_NOT_EXISTS"}, "some_value"])
+    Application.put_env(:zenv, :test_case_10, [{:system, "ZENV_ENV"}, "some_value"])
+    Application.put_env(:zenv, :test_case_11, [{:system, "ZENV_ENV"}])
     :ok
+  end
+
+  describe "Zenv.get_env/3 with list of configuration as parameter" do
+    test "returns the env variable of second element when first element's env variable does not exists" do
+      assert Zenv.get_env(:zenv, :test_case_6) == "zenv_env_1"
+    end
+
+    test "returns nil when no element has defined env variables" do
+      assert Zenv.get_env(:zenv, :test_case_7) == nil
+    end
+
+    test "returns nil when empty list" do
+      assert Zenv.get_env(:zenv, :test_case_8) == nil
+    end
+
+    test "returns some_value of second element when first element's env variable does not exists" do
+      assert Zenv.get_env(:zenv, :test_case_9) == "some_value"
+    end
+
+    test "returns env variable of first element" do
+      assert Zenv.get_env(:zenv, :test_case_10) == "zenv_env_1"
+    end
+
+    test "returns env variable of first element (when list has only 1 element)" do
+      assert Zenv.get_env(:zenv, :test_case_11) == "zenv_env_1"
+    end
   end
 
   describe "Zenv.get_env/3" do
