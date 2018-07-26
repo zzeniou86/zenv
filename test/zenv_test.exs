@@ -17,7 +17,11 @@ defmodule ZenvTest do
     Application.put_env(:zenv, :test_case_10, [{:system, "ZENV_ENV"}, "some_value"])
     Application.put_env(:zenv, :test_case_11, [{:system, "ZENV_ENV"}])
     Application.put_env(:zenv, :test_case_12, {:test, "test_variable"})
-    Application.put_env(:zenv, :test_case_13, {:prod, "test_variable"})
+    Application.put_env(:zenv, :test_case_13, {:prod, "prod_variable"})
+    Application.put_env(:zenv, :test_case_14, [{:system, "ZENV_ENV"}, {:test, "test_variable"}])
+    Application.put_env(:zenv, :test_case_15, [{:system, "DOES_NOT_EXISTS"}, {:test, "test_variable"}])
+    Application.put_env(:zenv, :test_case_16, [{:system, "DOES_NOT_EXISTS"}, {:prod, "prod_variable"}])
+
     :ok
   end
 
@@ -29,6 +33,19 @@ defmodule ZenvTest do
     test "returns nil when the environment does not match with the environment tuple" do
       assert Zenv.get_env(:zenv, :test_case_13) == nil
     end
+
+    test "returns system variable in list of configuration when it exists" do
+      assert Zenv.get_env(:zenv, :test_case_14) == "zenv_env_1"
+    end
+
+    test "returns :test variable in list of configuration when :system env does not exists" do
+      assert Zenv.get_env(:zenv, :test_case_15) == "test_variable"
+    end
+
+    test "returns nil when :system env does not exists and environment does not match with env tuple" do
+      assert Zenv.get_env(:zenv, :test_case_16) == nil
+    end
+
   end
 
   describe "Zenv.get_env/3 with list of configuration as parameter" do
