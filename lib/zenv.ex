@@ -19,7 +19,7 @@ defmodule Zenv do
   @spec get_env(app, key, value) :: value
   def get_env(app, key, default \\ nil) do
     Application.get_env(app, key, default)
-    |> process_env()
+    |> process_env() || default
   end
 
   # if the configuration parameter is a {:system, _, _} tuple, attempt to get the value from environment variable
