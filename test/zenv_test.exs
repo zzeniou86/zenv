@@ -21,6 +21,7 @@ defmodule ZenvTest do
     Application.put_env(:zenv, :test_case_14, [{:system, "ZENV_ENV"}, {:test, "test_variable"}])
     Application.put_env(:zenv, :test_case_15, [{:system, "DOES_NOT_EXISTS"}, {:test, "test_variable"}])
     Application.put_env(:zenv, :test_case_16, [{:system, "DOES_NOT_EXISTS"}, {:prod, "prod_variable"}])
+    Application.put_env(:zenv, :test_case_17, [])
 
     :ok
   end
@@ -112,6 +113,10 @@ defmodule ZenvTest do
 
     test "returns the correct value when key exists" do
       assert Zenv.get_env(:zenv, :test_case_1, "default") == "it_works"
+    end
+
+    test "returns default value if Application.get_env returns nil and tuple is not declared" do
+      assert Zenv.get_env(:zenv, :test_case_17, "default") == "default"
     end
   end
 end
